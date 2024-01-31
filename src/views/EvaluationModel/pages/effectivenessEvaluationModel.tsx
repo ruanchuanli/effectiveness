@@ -116,7 +116,7 @@ const list = defineComponent({
                 v-model={[this.modelMethod, 'value']}
                 options={this.selectionTypeOptions}
                 valueField='id'
-                labelField='operatorName'
+                labelField='name'
                 placeholder='评估方法模型'
                 style={{ width: '300px' }}
                 size='small'
@@ -131,7 +131,6 @@ const list = defineComponent({
                 clearable
                 onClear={this.onClearSearch}
               />
-             
             </NSpace>
             <NSpace>
               <NButton size='small' type='primary' onClick={this.handleSearch}>

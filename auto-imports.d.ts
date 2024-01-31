@@ -287,8 +287,10 @@ declare global {
 declare global {
   // @ts-ignore
   export type { Component, ComponentPublicInstance, ComputedRef, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, VNode, WritableComputedRef, App, ComponentPublicInstanceCostom, DefineComponent } from 'vue'
+  import('vue')
   // @ts-ignore
   export type { RouteRecordRaw, RouteLocationRaw, LocationQuery, NavigationFailure, RouteParams, RouteLocationNormalizedLoaded, RouteRecordName, NavigationGuard } from 'vue-router'
+  import('vue-router')
 }
 // for vue template auto import
 import { UnwrapRef } from 'vue'

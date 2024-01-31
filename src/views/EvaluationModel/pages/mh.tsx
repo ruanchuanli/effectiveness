@@ -27,7 +27,7 @@ import {
   watch
 } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useTable } from '../components/effectivenessSelectionDetail/use-table'
+import { useTable } from '../components/mh/use-table'
 import Card from '@/components/card'
 import WeightModal from '../components/effectivenessSelectionDetail/modal'
 import {
@@ -37,7 +37,10 @@ import {
   getThemeDatasetTable,
   getThemeDatasetTableCol,
   indicatorSelectionAnalysis,
-  saveIndicatorSelectionAnalysis
+  saveIndicatorSelectionAnalysis,
+  getEvaluationEngineering,
+  taskDetailById,
+  taskPaging
 } from '../api'
 import { SelectBaseOption } from 'naive-ui/es/select/src/interface'
 import LineChart from '../components/effectivenessSelectionDetail/scree-charts'
@@ -46,10 +49,11 @@ import { ModelDisplayData } from '../api/type'
 
 const list = defineComponent({
   name: 'effectivenessSelectionDetail',
-  emits: ['stepOver'],
+  emits: ['stepOver', 'addpj'],
   setup(props, context) {
     const { t } = useI18n()
-    const { variables, getTableData, createColumns } = useTable()
+    const { variables, getTableData, createColumns, createColumns1 } =
+      useTable()
     const route = useRoute()
     const router = useRouter()
 
@@ -65,7 +69,9 @@ const list = defineComponent({
       showChart: ref(true),
       modelDisplayData: ref<ModelDisplayData[]>([])
     })
-
+    const addpj = () => {
+      variables.tableData1.push({})
+    }
     const stepOver = () => {
       console.log(12)
 
@@ -218,15 +224,13 @@ const list = defineComponent({
     onBeforeMount(async () => {
       console.log(12)
 
-      createColumns(variables)
+      // createColumns(variables)
+      createColumns1(variables)
 
-      await getThemeDataset().then((res: string[]) => {
-        // console.log(res);
+      await getEvaluationEngineering().then((res: string[]) => {
+        console.log(res)
 
-        variables.topicDataSet = res.map((v) => ({
-          value: v,
-          label: v
-        }))
+        variables.topicDataSet = res.totalList
       })
 
       // await getParameterFittingResult(route.query.id as string).then(
@@ -261,7 +265,8 @@ const list = defineComponent({
     })
 
     watch(useI18n().locale, () => {
-      createColumns(variables)
+      // createColumns(variables)
+      createColumns1(variables)
     })
 
     watch(
@@ -271,11 +276,11 @@ const list = defineComponent({
           return
         }
 
-        getThemeDatasetTable(topicData).then((res: any) => {
-          variables.topicDataSetTable = res
-          if (oldVal) {
-            variables.topicDataTable = res[0].id
-          }
+        taskPaging({ evaluationEngineeringId: topicData }).then((res: any) => {
+          variables.topicDataSetTable = res.totalList
+          // if (oldVal) {
+          //   variables.topicDataTable = res[0].id
+          // }
         })
       }
     )
@@ -287,13 +292,10 @@ const list = defineComponent({
           return
         }
 
-        getThemeDatasetTableCol(topicDataTable).then((res: string[]) => {
+        taskDetailById({ taskId: topicDataTable }).then((res: string[]) => {
           console.log(res)
 
-          variables.topicDataSetCol = res.map((v: any) => ({
-            value: v.field,
-            label: v.comment
-          }))
+          variables.topicDataSetCol = res.totalList
 
           if (oldVal) {
             variables.topicDataCol = []
@@ -337,7 +339,8 @@ const list = defineComponent({
       handleAnalyticalMethodChange,
       trim,
       handleBack,
-      stepOver
+      stepOver,
+      addpj
     }
   },
   render() {
@@ -355,14 +358,28 @@ const list = defineComponent({
             {/* <div class='desc'>{this.$route.query.manageName}</div> */}
           </NGridItem>
         </NGrid>
-        <Card>
+        <Card title='评价集维护'>
+          <div style='float:right'>
+            <NButton size='small' type='primary' onClick={this.addpj}>
+              新增
+            </NButton>
+          </div>
+          <NDataTable
+            loading={loadingRef}
+            columns={this.columns1}
+            data={this.tableData1}
+          />
+        </Card>
+        <Card title='评价方案选择'>
           <NSpace vertical>
             <NSpace justify='space-between'>
               <NSpace>
                 <NSelect
                   v-model={[this.topicData, 'value']}
                   options={this.topicDataSet}
-                  placeholder={'主题数据集选择'}
+                  labelField='evaluationEngineeringName'
+                  valueField='id'
+                  placeholder={'选择评估工程'}
                   style={{ width: '300px' }}
                   size='small'
                   onClear={this.onClearSearch}
@@ -370,9 +387,9 @@ const list = defineComponent({
                 <NSelect
                   v-model={[this.topicDataTable, 'value']}
                   options={this.topicDataSetTable}
-                  labelField='tableName'
+                  labelField='taskName'
                   valueField='id'
-                  placeholder={'数据表选择'}
+                  placeholder={'选择评估项目'}
                   style={{ width: '300px' }}
                   size='small'
                   onClear={this.onClearSearch}
@@ -380,11 +397,13 @@ const list = defineComponent({
                 <NSelect
                   v-model={[this.topicDataCol, 'value']}
                   options={this.topicDataSetCol}
-                  placeholder={'数据列选择'}
+                  placeholder={'选择评估方案'}
                   multiple={true}
                   style={{ width: '300px' }}
                   size='small'
                   onClear={this.onClearSearch}
+                  labelField='evaluationPlanName'
+                  valueField='id'
                 />
               </NSpace>
               <NSpace>
@@ -398,7 +417,7 @@ const list = defineComponent({
                         <SearchOutlined />
                       </NIcon>
                     ),
-                    default: () => <span>数据预览</span>
+                    default: () => <span>权重预览</span>
                   }}
                 ></NButton>
               </NSpace>

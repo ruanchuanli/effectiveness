@@ -69,7 +69,8 @@ export default {
     {
       path: '/evaluation-model/effectiveness-evaluation-model',
       name: 'effectiveness-evaluation-model',
-      component: components['EvaluationModel-pages-effectivenessEvaluationModel'],
+      component:
+        components['EvaluationModel-pages-effectivenessEvaluationModel'],
       meta: {
         title: '效能评估模型',
         activeMenu: 'evaluation-model',
@@ -80,7 +81,8 @@ export default {
     {
       path: '/evaluation-model/effectiveness-evaluation-model-detail',
       name: 'effectiveness-evaluation-model-detail',
-      component: components['EvaluationModel-pages-effectivenessEvaluationModelDetail'],
+      component:
+        components['EvaluationModel-pages-effectivenessEvaluationModelDetail'],
       meta: {
         title: '效能评估模型详情',
         activeMenu: 'evaluation-model',
@@ -88,5 +90,16 @@ export default {
         auth: []
       }
     },
+    {
+      path: '/evaluation-model/mh',
+      name: 'mh',
+      component: components['EvaluationModel-pages-mh'],
+      meta: {
+        title: '模糊详情',
+        activeMenu: 'evaluation-model',
+        showSide: false,
+        auth: []
+      }
+    }
   ]
 }

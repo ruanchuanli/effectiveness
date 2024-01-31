@@ -7,7 +7,7 @@ import {
   ref,
   toRefs,
   watch,
-  h,
+  h
 } from 'vue'
 import { PlusOutlined } from '@vicons/antd'
 import {
@@ -20,9 +20,9 @@ import {
   NSpace,
   NButton,
   NIcon,
-  NDataTable,
+  NDataTable
 } from 'naive-ui'
-import { useForm} from './use-form'
+import { useForm } from './use-form'
 import Modal from '@/components/modal'
 import {
   getStageExpensesMapping,
@@ -49,13 +49,12 @@ const ProjectModal = defineComponent({
   props,
   emits: ['cancelModal', 'confirmModal'],
   setup(props, ctx) {
-    
     const { variables, handleValidate, t } = useForm(props, ctx)
 
     const cancelModal = () => {
       if (props.statusRef === 0) {
-        console.log(11);
-        
+        console.log(11)
+
         variables.model.id = ''
         variables.model.modelName = ''
         variables.model.modelDesc = ''
@@ -104,7 +103,7 @@ const ProjectModal = defineComponent({
                 h(NInput, {
                   placeholder: '',
                   value: row.level,
-                  onUpdateValue(v:any) {
+                  onUpdateValue(v: any) {
                     variables.model.evaluationLevel[index].level = v
                   }
                 })
@@ -138,7 +137,7 @@ const ProjectModal = defineComponent({
                   precision: 4,
                   disabled: index === 0 ? true : false,
                   value: row.left,
-                  onUpdateValue(v:any) {
+                  onUpdateValue(v: any) {
                     variables.model.evaluationLevel[index].left = v
                   }
                 })
@@ -175,9 +174,8 @@ const ProjectModal = defineComponent({
                   placeholder: '',
                   precision: 4,
                   value: row.right,
-                  onUpdateValue(v:any) {
-                    variables.model.evaluationLevel[index].right =
-                      v
+                  onUpdateValue(v: any) {
+                    variables.model.evaluationLevel[index].right = v
                     // leftFormRef.value?.validate((valid) => {
                     //   if (valid) {
                     //     // 表单校验通过
@@ -214,7 +212,7 @@ const ProjectModal = defineComponent({
       }
     ]
     const trim = getCurrentInstance()?.appContext.config.globalProperties.trim
-      
+
     watch(
       () => props.statusRef,
       () => {
@@ -224,7 +222,7 @@ const ProjectModal = defineComponent({
           variables.model.evaluationMethod = ''
           variables.model.evaluationTarget = []
           variables.model.evaluationLevel = [{ left: 0.0 }]
-          console.log(22);
+          console.log(22)
         } else {
           // 不知道啥时候触发
           variables.model.modelName = props.row.modelName
@@ -255,27 +253,26 @@ const ProjectModal = defineComponent({
     )
 
     const equipmentTypeOptions = ref([
-      {
-        label:"模糊评判法",
-        value: 1
-      },
-      {
-        label:"理想点法",
-        value: 2
-      },
-      {
-        label:"ADC法",
-        value: 3
-      },
+      // {
+      //   label:"模糊评判法",
+      //   value: 1
+      // },
+      // {
+      //   label:"理想点法",
+      //   value: 2
+      // },
+      // {
+      //   label:"ADC法",
+      //   value: 3
+      // },
     ])
 
     onMounted(async () => {
-      console.log(props.statusRef);
+      console.log(props.statusRef)
       console.log(createColumns())
       variables.model.evaluationLevel = []
-      
-      
-      // equipmentTypeOptions.value = await getEvaluationMethodModelList()
+
+      equipmentTypeOptions.value = await getEvaluationMethodModelList()
     })
     const handleAddEvaluationTarget = () => {
       // variables.model.evaluationLevel.push({left:0})
@@ -339,36 +336,36 @@ const ProjectModal = defineComponent({
               options={this.equipmentTypeOptions}
               placeholder='请选择评估方法模型'
               size='small'
+              valueField='id'
+              labelField='name'
             />
           </NFormItem>
           <NFormItem label={'评估对象'} path='evaluationTarget'>
             <NDynamicTags v-model={[this.model.evaluationTarget, 'value']} />
           </NFormItem>
-          <NFormItem
-            label={'评估等级'}
-          >
-              <NSpace
-                align='center'
-                justify='space-between'
-                style={{ width: '100%' }}
+          <NFormItem label={'评估等级'}>
+            <NSpace
+              align='center'
+              justify='space-between'
+              style={{ width: '100%' }}
+            >
+              <NButton
+                size='small'
+                onClick={this.handleAddEvaluationTarget}
+                type='primary'
               >
-                <NButton
-                  size='small'
-                  onClick={this.handleAddEvaluationTarget}
-                  type='primary'
-                >
-                  <NIcon>
-                    <PlusOutlined />
-                  </NIcon>
-                  {'新增评价等级'}
-                </NButton>
-              </NSpace>
+                <NIcon>
+                  <PlusOutlined />
+                </NIcon>
+                {'新增评价等级'}
+              </NButton>
+            </NSpace>
           </NFormItem>
           <NFormItem path='evaluationLevel'>
             <NDataTable
-                columns={this.columns}
-                data={this.model.evaluationLevel}
-              />
+              columns={this.columns}
+              data={this.model.evaluationLevel}
+            />
           </NFormItem>
         </NForm>
       </Modal>

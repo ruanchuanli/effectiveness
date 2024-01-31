@@ -14,7 +14,7 @@ import {
   IUpdateCostExpertMaintenance,
   ISaveCostExpertAnalysis,
   IUpdateExpertJudgment,
-  PageReq,
+  PageReq
   // CreatePlanReq,
   // UpdateReq,
   // TaskPageReq,
@@ -367,7 +367,7 @@ export function getEnveloping(
   targetCol: string
 ): any {
   return axios({
-    url: `/costEstimationModel/getEnveloping`,
+    url: '/costEstimationModel/getEnveloping',
     method: 'get',
     params: { topicDataSetId, paramCol, targetCol }
   })
@@ -384,7 +384,7 @@ export function parameterFitting(
   params: Object
 ): any {
   return axios({
-    url: `/costEstimationModel/parameterFitting`,
+    url: '/costEstimationModel/parameterFitting',
     method: 'post',
     data: {
       operatorId,
@@ -432,7 +432,7 @@ export function saveParameterFittingResult(
   data.append('modelFittingParam', modelFittingParam)
 
   return axios({
-    url: `/costEstimationModel/saveParameterFittingResult`,
+    url: '/costEstimationModel/saveParameterFittingResult',
     method: 'post',
     data
   })
@@ -472,7 +472,7 @@ export function saveIndicatorSelectionAnalysis(
   data.append('analysisResultJson', analysisResultJson)
 
   return axios({
-    url: `/costEstimationModel/saveIndicatorSelectionAnalysis`,
+    url: '/costEstimationModel/saveIndicatorSelectionAnalysis',
     method: 'post',
     data
   })
@@ -488,7 +488,7 @@ export function indicatorSelectionAnalysis(
   params: object
 ): any {
   return axios({
-    url: `/costEstimationModel/indicatorSelectionAnalysis`,
+    url: '/costEstimationModel/indicatorSelectionAnalysis',
     method: 'post',
     data: { analyticalMethods, topicDataSetId, indexList, params },
     headers: {
@@ -503,12 +503,35 @@ export function indicatorSelectionAnalysis(
  */
 export function getEvaluationEngineering(): any {
   return axios({
-    url: `/evaluationEngineering/result/page`,
+    url: '/evaluationEngineering/result/page',
     method: 'get',
     params: { pageNo: 1, pageSize: 9999999 }
   })
 }
+// 根据评估工程ID查询任务分页列表
 
+export function taskPaging(params: any): any {
+  return axios({
+    url: '/evaluationEngineering/task/result/page',
+    method: 'get',
+    params: { pageNo: 1, pageSize: 9999999, ...params }
+  })
+}
+// 根据当前任务ID查询评估方案分页列表
+export function taskDetailById(params: any): any {
+  return axios({
+    url: 'evaluationEngineering/task/evaluationPlan/result/page',
+    method: 'get',
+    params: { pageNo: 1, pageSize: 9999999, ...params }
+  })
+}
+// 根据评估方案ID获取所有叶子节点的权重
+export function getWeightByPlanId(planId: any): any {
+  return axios({
+    url: `effectivenessEvaluationModel/getWeightByPlanId/${planId}`,
+    method: 'get'
+  })
+}
 /**
  * @description 获取算子类别列表
  */
@@ -524,12 +547,11 @@ export function getDictListByType(type: string): any {
  */
 export function addOperatorType(label: string): any {
   return axios({
-    url: `/costEstimationModel/addOperatorType`,
+    url: '/costEstimationModel/addOperatorType',
     method: 'post',
     params: { label }
   })
 }
-
 
 /**
  * @description 分页查询效能评估模型列表
@@ -544,14 +566,14 @@ export function geteffectivenessEvaluationModelResult(params: PageReq): any {
 // 评估方法模型
 export function getEvaluationMethodModelList(): any {
   return axios({
-    url: `/effectivenessEvaluationModel/getEvaluationMethodModelList`,
+    url: '/effectivenessEvaluationModel/getEvaluationMethodModelList',
     method: 'get'
   })
 }
 // 修改
-export function effectivenessEvaluationModelUpdate(data:any): any {
+export function effectivenessEvaluationModelUpdate(data: any): any {
   return axios({
-    url: `/effectivenessEvaluationModel/update`,
+    url: '/effectivenessEvaluationModel/update',
     method: 'post',
     data,
     headers: {
@@ -561,9 +583,9 @@ export function effectivenessEvaluationModelUpdate(data:any): any {
   })
 }
 // 新增
-export function effectivenessEvaluationModelAdd(data:any): any {
+export function effectivenessEvaluationModelAdd(data: any): any {
   return axios({
-    url: `/effectivenessEvaluationModel/create`,
+    url: '/effectivenessEvaluationModel/create',
     method: 'post',
     data,
     headers: {

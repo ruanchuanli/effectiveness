@@ -36,7 +36,6 @@ export function useTable() {
     variables.statusRef = 1
     variables.row = row
     console.log(row)
-    
   }
 
   const handleDelete = (row: any) => {
@@ -54,13 +53,23 @@ export function useTable() {
   }
 
   const handleSkipClick = (row: any) => {
-    router.push({
-      path: '/evaluation-model/effectiveness-evaluation-model-detail',
-      query: {
-        id: row.id,
-        modelName: row.modelName
-      }
-    })
+    if (row.evaluationMethod == 1) {
+      router.push({
+        path: '/evaluation-model/mh',
+        query: {
+          id: row.id,
+          modelName: row.modelName
+        }
+      })
+    } else {
+      router.push({
+        path: '/evaluation-model/effectiveness-evaluation-model-detail',
+        query: {
+          id: row.id,
+          modelName: row.modelName
+        }
+      })
+    }
   }
 
   const checkedRowKeysRef = ref<DataTableRowKey[]>([])
@@ -247,7 +256,7 @@ export function useTable() {
 
     const { state } = useAsyncState(
       geteffectivenessEvaluationModelResult(reqParams).then((res: PageRes) => {
-        console.log(res,'1212')
+        console.log(res, '1212')
         variables.totalPage = res.totalPage
         variables.tableData = res.totalList as any
         variables.loadingRef = false
