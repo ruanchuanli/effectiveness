@@ -1,0 +1,37 @@
+.back-btn {
+  float: right
+}
+
+.tree-wrap {
+  display: flex;
+  width: 100%;
+
+  .tree-card {
+    width: 16%;
+    margin-right: 20px;
+  }
+
+  .tree-input {
+    margin-bottom: 20px;
+  }
+}
+
+.c-space {
+  flex: 1;
+
+  .c-title-wrap {
+    display: flex;
+    align-items: center;
+
+    .c-border {
+      width: 3px;
+      height: 15px;
+      border-left: 3px solid green;
+      margin-right: 15px;
+    }
+  }
+}
+
+.c-select {
+  width: 300px;
+}

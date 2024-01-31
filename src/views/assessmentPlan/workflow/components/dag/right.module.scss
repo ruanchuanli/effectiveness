@@ -1,0 +1,24 @@
+.withConent{
+    width: 20%;
+    padding: 20px;
+    .top{
+       
+    }
+    .below{
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+    .labelTitle{
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    .labelLi{
+        margin-bottom: 10px;
+    }
+}
+
+.dagWeightAhp {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
