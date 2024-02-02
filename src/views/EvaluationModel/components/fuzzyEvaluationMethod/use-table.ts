@@ -7,7 +7,8 @@ import {
   getEffectivenessEvaluationModelDetail,
   getActiveColVal,
   getCostEstimationModel,
-  getWeightByPlanId
+  getWeightByPlanId,
+  getFuzzyAnalysisResults
 } from '@/views/EvaluationModel/api'
 import { useRoute } from 'vue-router'
 import {
@@ -55,13 +56,7 @@ export function useTable() {
     checkedRowKeysRef.value = rowKeys
   }
 
-  const createColumns = (variables: any) => {
-    variables.topicDataColSelected = variables.topicDataCol.map(
-      (s: string) => ({
-        ...variables.topicDataSetCol.find((item: any) => item.value == s)
-      })
-    )
-
+  const createColumns = (variables: any,dqindex) => {
     variables.columns = [
       {
         title: '#',
@@ -69,30 +64,29 @@ export function useTable() {
         render: (unused: any, index: number) => index + 1,
         ...COLUMN_WIDTH_CONFIG['index']
       },
-      ...variables.topicDataColSelected.map((item: any) => ({
-        title: item.label,
-        key: item.value
-      })),
       {
-        title: '选择评估对象',
-        key: 'modelName',
-        render: (row, index) =>
-          h(NSelect, {
-            value: row.modelName,
-            multiple: true,
-            clearable: true,
-            options: variables.evaluationTargetList,
-            onUpdateValue: (v) => {
-              console.log(v)
-              console.log(row)
-              variables.tableData[index].modelName = v
-            }
-          })
-      }
+        title: '指标',
+        key: 'name',
+      },
+      ...variables.tableData1.map((item: any,columnIndex:any) => ({
+        title: item.name,
+        key: dqindex+'-'+columnIndex,
+        render(row, rowIndex) {
+          return h(NForm, null, [
+            h(NFormItem, null, [
+              h(NInputNumber, {
+                placeholder: '',
+                value: variables.zj[variables.activeTab][rowIndex][columnIndex], // 从对应的三维数组位置获取值
+                'onUpdate:value': (v) => {
+                  // 更新对应的三维数组位置的值
+                  variables.zj[variables.activeTab][rowIndex][columnIndex] = v;
+                }
+              })
+            ])
+          ]);
+        }
+      })),
     ]
-    if (variables.tableWidth) {
-      variables.tableWidth = calculateTableWidth(variables.columns)
-    }
   }
   const createColumns1 = (variables: any) => {
     variables.columns1 = [
@@ -197,7 +191,25 @@ export function useTable() {
       variables.tableWidth = calculateTableWidth(variables.columns)
     }
   }
+  const createColumnsjg = (variables: any) => {
+    variables.columnsjg =variables.tableData1.map(item=>item.name).map((bt, index) => ({
+      title: bt,
+      key: index
+    }));
+    // 添加第一列和最后一列
+    variables.columnsjg.unshift({
+      title: '对象',
+      key: 'object'
+    });
+    variables.columnsjg.push({
+      title: '综合评价',
+      key: 'fuzzyscore'
+    });
+  }
   const variables = reactive({
+    results:{},
+    analysisResults:{},
+    activeTab:0,
     columns: [],
     columns1: [],
     tableWidth: DefaultTableWidth,
@@ -206,6 +218,11 @@ export function useTable() {
     show: false,
     tableData: [],
     tableData1: [],
+    tableDatas: [],
+    columnss:[],
+    tablejg:[],
+    columnsjg:[],
+    zj:[],
     page: ref(1),
     pageSize: ref(10),
     engineering: ref(null),
@@ -218,69 +235,61 @@ export function useTable() {
     evaluationTargetList: [],
     loadingRef: ref(false),
 
-    topicDataSet: ref<SelectMixedOption[]>([]),
-    topicData: ref<string>(),
-    topicDataSetTable: ref<SelectMixedOption[]>([]),
-    topicDataTable: ref<string>(),
-    topicDataSetCol: ref<SelectMixedOption[]>([]),
-    topicDataCol: ref<string[]>([]),
+    evaluationEngineer: ref<SelectMixedOption[]>([]),
+    evaluationEngineeringId: ref<string>(),
+    evaluationProject: ref<SelectMixedOption[]>([]),
+    evaluationProjectId: ref<string>(),
+    evaluationPlan: ref<SelectMixedOption[]>([]),
+    evaluationPlanId: ref<string>(),
     topicDataColSelected: ref<any[]>([])
   })
   const getDetail = () => {
     getEffectivenessEvaluationModelDetail(route.query.id as string).then(
       (res: any) => {
-        console.log(res, '11')
-
-        variables.evaluationTargetList = res.evaluationTargetList.map(
-          (item) => {
-            return {
-              label: item,
-              value: item
-            }
-          }
-        )
+        variables.evaluationTargetList = res.evaluationTargetList
+      }
+    )
+    getFuzzyAnalysisResults
+    (route.query.id).then(
+      (res: any) => {
+        variables.results = res
       }
     )
   }
   const getTableData = () => {
     if (
-      !variables.topicDataTable ||
-      !variables.topicData ||
-      !variables.topicDataCol ||
-      variables.topicDataCol.length == 0 ||
+      !variables.evaluationProjectId ||
+      !variables.evaluationEngineeringId ||
+      !variables.evaluationPlanId ||
+      variables.evaluationPlanId.length == 0 ||
       variables.loadingRef
     )
       return
     variables.loadingRef = true
-    if (variables.topicDataCol.length == 0) {
-      variables.topicDataCol = variables.topicDataSetCol.map(
-        (item) => item.value as string
-      )
-    }
     const { state } = useAsyncState(
-      getWeightByPlanId(variables.topicDataCol)
+      getWeightByPlanId(variables.evaluationPlanId)
         .then((res: PageRes) => {
-          console.log(res, 'res')
-
+          variables.zj = []
+          variables.columnss = []
           variables.totalPage = res.totalPage
-          variables.tableData = res.totalList as any
-          createColumns(variables)
+          variables.tableData = res as any
+          // variables.tableData.forEach(item=>{item.level=''})
+          let matrix: number[][] = [];
+          for (let i = 0; i < variables.tableData.length; i++) {
+            matrix[i] = []; // 初始化当前行的数组
+            for (let j = 0; j < variables.tableData1.length; j++) {
+              matrix[i][j] = []; // 初始化当前行的列数据
+            }
+          }
+          variables.evaluationTargetList.forEach(item=>{
+            variables.zj.push(matrix)
+            variables.tableDatas.push(variables.tableData)
+            // variables.columnss.push(variables.columns)
+          })
+          createColumns(variables,0)
         })
         .finally(() => {
           variables.loadingRef = false
-          // console.log(variables.topicDataCol)
-          // if (variables.topicDataCol) {
-          //   console.log(12)
-          //   createColumns1(variables)
-
-          //   variables.tableData1 = variables.topicDataCol.map((item) => {
-          //     return {
-          //       targets: item,
-          //       qz: ''
-          //     }
-          //   })
-          //   console.log(variables.tableData1)
-          // }
         }),
       {}
     )
@@ -294,6 +303,7 @@ export function useTable() {
     variables,
     getTableData,
     createColumns,
-    createColumns1
+    createColumns1,
+    createColumnsjg
   }
 }

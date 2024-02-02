@@ -91,15 +91,59 @@ export default {
       }
     },
     {
-      path: '/evaluation-model/mh',
-      name: 'mh',
-      component: components['EvaluationModel-pages-mh'],
+      path: '/evaluation-model/fuzzyEvaluationMethod',
+      name: 'fuzzyEvaluationMethod',
+      component: components['EvaluationModel-pages-fuzzyEvaluationMethod'],
       meta: {
-        title: '模糊详情',
+        title: '模糊评判法',
         activeMenu: 'evaluation-model',
         showSide: false,
         auth: []
       }
-    }
+    },
+    {
+      path: '/evaluation-model/idealPointMethod',
+      name: 'idealPointMethod',
+      component: components['EvaluationModel-pages-idealPointMethod'],
+      meta: {
+        title: '理想点法',
+        activeMenu: 'evaluation-model',
+        showSide: false,
+        auth: []
+      }
+    },
+    {
+      path: '/evaluation-model/ADCMethod',
+      name: 'ADCMethod',
+      component: components['EvaluationModel-pages-ADCMethod'],
+      meta: {
+        title: 'ADC法',
+        activeMenu: 'evaluation-model',
+        showSide: false,
+        auth: []
+      }
+    },
+    {
+      path: '/evaluation-model/SEAMethod',
+      name: 'SEAMethod',
+      component: components['EvaluationModel-pages-SEAMethod'],
+      meta: {
+        title: 'SEA法',
+        activeMenu: 'evaluation-model',
+        showSide: false,
+        auth: []
+      }
+    },
+    {
+      path: '/evaluation-model/exponentialMethod',
+      name: 'exponentialMethod',
+      component: components['EvaluationModel-pages-exponentialMethod'],
+      meta: {
+        title: '指数法',
+        activeMenu: 'evaluation-model',
+        showSide: false,
+        auth: []
+      }
+    },
   ]
 }

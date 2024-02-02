@@ -53,17 +53,42 @@ export function useTable() {
   }
 
   const handleSkipClick = (row: any) => {
-    if (row.evaluationMethod == 1) {
+    if (row.evaluationMethod == 1) { //模糊评判法
       router.push({
-        path: '/evaluation-model/mh',
+        path: '/evaluation-model/fuzzyEvaluationMethod',
+        query: {
+          id: row.id,
+          modelName: row.modelName,
+          evaluationMethod:row.evaluationMethod
+        }
+      })
+    } else if(row.evaluationMethod == 2) { //理想点法
+      router.push({
+        path: '/evaluation-model/idealPointMethod',
         query: {
           id: row.id,
           modelName: row.modelName
         }
       })
-    } else {
+    }else if(row.evaluationMethod == 3) { //ADC法
       router.push({
-        path: '/evaluation-model/effectiveness-evaluation-model-detail',
+        path: '/evaluation-model/ADCMethod',
+        query: {
+          id: row.id,
+          modelName: row.modelName
+        }
+      })
+    }else if(row.evaluationMethod == 4) { //SEA法
+      router.push({
+        path: '/evaluation-model/SEAMethod',
+        query: {
+          id: row.id,
+          modelName: row.modelName
+        }
+      })
+    }else if(row.evaluationMethod == 5) { //指数法
+      router.push({
+        path: '/evaluation-model/exponentialMethod',
         query: {
           id: row.id,
           modelName: row.modelName

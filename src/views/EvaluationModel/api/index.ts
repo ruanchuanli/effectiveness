@@ -608,3 +608,95 @@ export function getEffectivenessEvaluationModelDetail(id: string): any {
     method: 'get'
   })
 }
+/* 模糊评判法 */
+// 调用模糊评判python算子
+export function callMohuPython(data: any): any {
+  return axios({
+    url: 'effectivenessEvaluationModel/callMohuPython',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    transformRequest: (params) => JSON.stringify(params)
+  })
+}
+
+// 保存模糊评判法分析结果
+export function saveFuzzyAnalysisResults(data: any): any {
+  return axios({
+    url: 'effectivenessEvaluationModel/saveFuzzyAnalysisResults',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    transformRequest: (params) => JSON.stringify(params)
+  })
+}
+
+// 根据模型ID获取模糊评判法分析详情
+export function getFuzzyAnalysisResults(id: string): any {
+  return axios({
+    url: `effectivenessEvaluationModel/getFuzzyAnalysisResults/${id}`,
+    method: 'get'
+  })
+}
+
+/* 理想点法 */
+
+// 根据评估方案ID和指标定义code获取指标归一化信息
+export function getNormalizationEcho(id: string): any {
+  return axios({
+    url: `evaluationEngineering/task/evaluationPlan/getNormalizationEcho`,
+    method: 'get'
+  })
+}
+
+
+// 设置归一化方式
+export function updateNormalizationEchoType(data: any): any {
+  return axios({
+    url: 'evaluationEngineering/task/evaluationPlan/updateNormalizationEchoType',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    transformRequest: (params) => JSON.stringify(params)
+  })
+}
+
+// 保存理想点法分析结果
+export function saveIdealPointAnalysisResults(data: any): any {
+  return axios({
+    url: 'effectivenessEvaluationModel/saveIdealPointAnalysisResults',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    transformRequest: (params) => JSON.stringify(params)
+  })
+}
+
+// 调用理想点法python算子
+export function callLixiangPython(data: any): any {
+  return axios({
+    url: 'effectivenessEvaluationModel/callLixiangPython',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    transformRequest: (params) => JSON.stringify(params)
+  })
+}
+
+// 根据模型ID获取理想点法分析详情
+export function getIdealPointAnalysisResults(id: string): any {
+  return axios({
+    url: `effectivenessEvaluationModel/getIdealPointAnalysisResults/${id}`,
+    method: 'get'
+  })
+}
